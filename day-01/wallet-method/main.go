@@ -13,7 +13,7 @@ type Wallet struct {
 
 func (w *Wallet) WalletDeposit(amount int32) error {
 	if amount <= 0 {
-		return  errors.New("amount must be positive")
+		return errors.New("amount must be positive")
 	}
 	w.Balance += amount
 
@@ -22,8 +22,8 @@ func (w *Wallet) WalletDeposit(amount int32) error {
 
 func main() {
 	wallet := Wallet{
-		ID: 1,
-		Name: "Kaspi",
+		ID:      1,
+		Name:    "Kaspi",
 		Balance: 1000,
 	}
 	err := wallet.WalletDeposit(1250)

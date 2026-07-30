@@ -7,13 +7,13 @@ import (
 )
 
 var (
-	ErrInvalidLetterID = errors.New("invalid letter ID")
-	ErrAccessDenied    = errors.New("access denied")
-	ErrToFindLetter    = errors.New("cannot find letter")
-	ErrCannotSendToSelf = errors.New("cannot send to self")
-	ErrInvalidSenderID = errors.New("invalid sender ID")
+	ErrInvalidLetterID    = errors.New("invalid letter ID")
+	ErrAccessDenied       = errors.New("access denied")
+	ErrToFindLetter       = errors.New("cannot find letter")
+	ErrCannotSendToSelf   = errors.New("cannot send to self")
+	ErrInvalidSenderID    = errors.New("invalid sender ID")
 	ErrInvalidRecipientID = errors.New("invalid recipient ID")
-	ErrEmptyMessage = errors.New("message connot be empty")
+	ErrEmptyMessage       = errors.New("message connot be empty")
 )
 
 type LetterRepository interface {
@@ -68,18 +68,15 @@ func (s *LetterService) GetLetterByID(letterID int64, userID int64) (Letter, err
 	return letter, nil
 }
 
-
-
-func (r *MemoryLetterRepository) CreateLetter(letter Letter) (Letter, error){
-	newID := int64(len(r.letters)+1)
+func (r *MemoryLetterRepository) CreateLetter(letter Letter) (Letter, error) {
+	newID := int64(len(r.letters) + 1)
 	letter.ID = newID
 	letter.CreatedAt = time.Now()
 
-	r.letters[newID] =letter
+	r.letters[newID] = letter
 
 	return letter, nil
 }
-
 
 func (s *LetterService) CreateLetter(senderID int64, recipientID int64, message string) (Letter, error) {
 	if senderID <= 0 {
@@ -96,16 +93,15 @@ func (s *LetterService) CreateLetter(senderID int64, recipientID int64, message 
 	}
 
 	letter := Letter{
-		Sender: senderID,
+		Sender:    senderID,
 		Recipient: recipientID,
-		Message: message,
+		Message:   message,
 	}
 
 	createdLetter, err := s.letterRepo.CreateLetter(letter)
 	if err != nil {
 		return Letter{}, err
 	}
-
 
 	return createdLetter, nil
 
@@ -130,7 +126,6 @@ func main() {
 		},
 	}
 
-	
 	service := NewLetterService(repo)
 
 	newletter, err := service.CreateLetter(10, 20, "как дела?")

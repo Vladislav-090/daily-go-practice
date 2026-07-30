@@ -14,47 +14,44 @@ type Task struct {
 	CreatedAt time.Time
 }
 
-type TaskRepository interface{
+type TaskRepository interface {
 	CreateTask(task Task) (Task, error)
 	GetTaskByID(taskID int64) (Task, error)
 	UpdateTask(task Task) (Task, error)
 }
 
-
-
 type TaskService struct {
 	repo TaskRepository
 }
 
-func NewTaskService(taskRepo TaskRepository) *TaskService{
+func NewTaskService(taskRepo TaskRepository) *TaskService {
 	return &TaskService{
 		repo: taskRepo,
 	}
 }
 
-type MemoryTasksRepository struct{
+type MemoryTasksRepository struct {
 	tasks map[int64]Task
 }
 
-
 var (
-	ErrInvalidUserID = errors.New("invalid user ID")
-	ErrEmptyTitle = errors.New("title is empty")
+	ErrInvalidUserID  = errors.New("invalid user ID")
+	ErrEmptyTitle     = errors.New("title is empty")
 	ErrCannotFindTask = errors.New("cannot find task")
-	ErrInvalidTaskID = errors.New("invalid task id")
-	ErrAccessDenied    = errors.New("access denied")
+	ErrInvalidTaskID  = errors.New("invalid task id")
+	ErrAccessDenied   = errors.New("access denied")
 )
 
 func (r *MemoryTasksRepository) CreateTask(task Task) (Task, error) {
-	newID := int64(len(r.tasks)+1)
+	newID := int64(len(r.tasks) + 1)
 	task.ID = newID
 	task.CreatedAt = time.Now()
-	r.tasks[newID] =  task
+	r.tasks[newID] = task
 
 	return task, nil
 }
 
-func (r *MemoryTasksRepository) GetTaskByID(taskID int64) (Task, error){
+func (r *MemoryTasksRepository) GetTaskByID(taskID int64) (Task, error) {
 	task, ok := r.tasks[taskID]
 	if !ok {
 		return Task{}, ErrCannotFindTask
@@ -64,7 +61,7 @@ func (r *MemoryTasksRepository) GetTaskByID(taskID int64) (Task, error){
 
 func (r *MemoryTasksRepository) UpdateTask(task Task) (Task, error) {
 	r.tasks[task.ID] = task
-	
+
 	return task, nil
 }
 
@@ -76,9 +73,9 @@ func (s *TaskService) CreateTask(userID int64, title string) (Task, error) {
 		return Task{}, ErrEmptyTitle
 	}
 
-	task:= Task{
-		UserID: userID,
-		Title: title,
+	task := Task{
+		UserID:    userID,
+		Title:     title,
 		Completed: false,
 	}
 
@@ -98,7 +95,7 @@ func (s *TaskService) GetTaskByID(taskID int64, userID int64) (Task, error) {
 		return Task{}, ErrInvalidUserID
 	}
 
-	task, err := s.repo.GetTaskByID(taskID) 
+	task, err := s.repo.GetTaskByID(taskID)
 	if err != nil {
 		return Task{}, err
 	}
@@ -110,15 +107,14 @@ func (s *TaskService) GetTaskByID(taskID int64, userID int64) (Task, error) {
 	return task, nil
 }
 
-
-func( s *TaskService) CompleteTask(taskID int64, userID int64) (Task, error) {
+func (s *TaskService) CompleteTask(taskID int64, userID int64) (Task, error) {
 	if taskID <= 0 {
 		return Task{}, ErrInvalidTaskID
 	}
 	if userID <= 0 {
 		return Task{}, ErrInvalidUserID
 	}
-	
+
 	task, err := s.repo.GetTaskByID(taskID)
 	if err != nil {
 		return Task{}, err
@@ -137,13 +133,11 @@ func( s *TaskService) CompleteTask(taskID int64, userID int64) (Task, error) {
 	return updatedTask, nil
 }
 
-
-
 func main() {
 	repo := &MemoryTasksRepository{
 		tasks: make(map[int64]Task),
 	}
-	
+
 	service := NewTaskService(repo)
 
 	newTask, err := service.CreateTask(1, "make breakfast")
@@ -166,5 +160,5 @@ func main() {
 		return
 	}
 	fmt.Println("updated task:", updateTask)
-	
+
 }

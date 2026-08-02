@@ -151,7 +151,7 @@ func main() {
 		fmt.Println("error:", err)
 		return
 	}
-	fmt.Println("user's cart:",gotCart)
+	fmt.Println("user's cart:", gotCart)
 
 	updatedCart1, err := service.AddProduct(gotCart.UserID, 3, 6)
 	if err != nil {

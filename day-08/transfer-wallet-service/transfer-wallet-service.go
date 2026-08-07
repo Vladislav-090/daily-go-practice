@@ -16,7 +16,7 @@ type Wallet struct {
 type TransferService struct{}
 
 var (
-	ErrSameWallet         = errors.New("transfer to same wallet")
+	ErrSameWallet          = errors.New("transfer to same wallet")
 	ErrInvalidFromWalletID = errors.New("invalid from wallet id")
 	ErrInvalidToWalletID   = errors.New("invalid to wallet id")
 	ErrInsufficientFunds   = errors.New("insufficient funds")
